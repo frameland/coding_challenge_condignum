@@ -1,4 +1,4 @@
-import { isIterationComplete } from './App';
+import { isIterationComplete } from './utils';
 
 describe('This helper function', () => {
 

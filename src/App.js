@@ -4,18 +4,15 @@ import { NewIteration } from "./views/NewIteration";
 import { Overview } from "./views/Overview";
 import { QuestionView } from "./views/QuestionView";
 import { LocalStorage } from "./common/LocalStorage";
-
-const routes = {
-	'/': 1,
-	'/new': 2,
-	'/iteration/:id': 3,
-	'/view/:id': 4
-};
+import { Routes, Route, useNavigate } from "react-router-dom";
+import { routes } from "./common/routes";
+import { isIterationComplete } from "./common/utils";
 
 function App() {
-	const [viewState, setViewState] = useState("overview");
+	const [initialized, setInitialized] = useState(false);
 	const [iterations, setIterations] = useState([]);
 	const [activeIteration, setActiveIteration] = useState(-1);
+	let navigate = useNavigate();
 
 	useEffect(() => {
 		loadState();
@@ -33,6 +30,7 @@ function App() {
 		if (savedIterations) {
 			setIterations(JSON.parse(savedIterations));
 		}
+		setInitialized(true);
 	}
 
 	function saveState(iterations) {
@@ -45,8 +43,9 @@ function App() {
 			title,
 			creationDateString: new Date().toISOString()
 		}]);
-		setActiveIteration(iterations.length);
-		setViewState('iteration');
+		const index = iterations.length;
+		setActiveIteration(index);
+		navigate(routes.iteration.replace(':id', index));
 	}
 
 	function finishIteration(answers) {
@@ -72,39 +71,53 @@ function App() {
 
 	function onBack() {
 		setActiveIteration(-1);
-		setViewState('overview');
+	}
+
+	if (!initialized) {
+		return <p>Loading...</p>
 	}
 
 	return (
 		<Layout>
-			{viewState === "overview" && (
-				<Overview
-					iterations={iterations}
-					onNew={() => setViewState('new')}
-					onIterationClick={(index) => {
-						setActiveIteration(index);
-						setViewState('iteration');
-					}}
-					onIterationDelete={(index) => removeIteration(index)}
-				/>
-			)}
-			{viewState === "new" && (
-				<NewIteration
-					onComplete={addIteration}
-					onBack={onBack}
-				/>
-			)}
-			{
-				viewState === "iteration" && activeIteration >= 0 && (
-					<QuestionView
+			<Routes>
+				<Route path={routes.index} element={
+					<Overview
+						iterations={iterations}
+						onNew={() => navigate(routes.new)}
+						onIterationClick={(index) => setActiveIteration(index)}
+						onIterationDelete={(index) => removeIteration(index)}
+					/>
+				} />
+				<Route path={routes.new} element={
+					<NewIteration
+						onComplete={addIteration}
+						onBack={onBack}
+					/>
+				} />
+				<Route path={routes.iteration} element={
+					<QuestionViewHelper
 						questions={questions}
-						title={iterations[activeIteration].title}
-						initialAnswers={iterations[activeIteration].answers}
+						iteration={iterations[activeIteration]}
 						onDone={(answers) => finishIteration(answers)}
 						onBack={onBack}
-					/>)
-			}
+					/>
+				} />
+			</Routes>
 		</Layout>
+	);
+}
+
+function QuestionViewHelper({ questions, iteration, onDone, onBack }) {
+	if (!iteration) return null;
+
+	return (
+		<QuestionView
+			questions={questions}
+			title={iteration.title}
+			initialAnswers={iteration.answers}
+			onDone={onDone}
+			onBack={onBack}
+		/>
 	);
 }
 
@@ -120,17 +133,6 @@ function Layout({ children }) {
 			{children && children}
 		</main>
 	)
-}
-
-export function nrOfQuestionsAnswered(answers) {
-	const answeredQuestions = answers.filter(a => {
-		return a.filter(Boolean).length > 0;
-	});
-	return answeredQuestions.length;
-}
-
-export function isIterationComplete(answers) {
-	return nrOfQuestionsAnswered(answers) === answers.length;
 }
 
 export default App;

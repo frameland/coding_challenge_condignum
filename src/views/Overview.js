@@ -9,20 +9,23 @@ export function Overview({ iterations, onNew, onIterationClick, onIterationDelet
 				<small className="text2 block center">Markus Langthaler</small>
 			</h1>
 			<div className="center mb-2">
-				<Button onClick={onNew} isPrimary>
+				<Button
+					isPrimary
+					onClick={onNew}>
 					New Iteration
 				</Button>
 			</div>
 			<ul>
 				{iterations
-					.sort(ascendingSort)
+					.sort(stringSort)
 					.map((i, index) => {
 						return (
-							<li key={i.title}>
+							<li key={i.creationDateString}>
 								<IterationPreview
 									title={i.title}
 									creationDateString={i.creationDateString}
 									wasCompleted={i.wasCompleted}
+									path={'iteration/' + index}
 									onClick={() => onIterationClick(index)}
 									onDelete={() => onIterationDelete(index)}
 								/>
@@ -35,6 +38,6 @@ export function Overview({ iterations, onNew, onIterationClick, onIterationDelet
 	);
 }
 
-function ascendingSort(a, b) {
+function stringSort(a, b) {
 	return a.title.localeCompare(b.title)
 }

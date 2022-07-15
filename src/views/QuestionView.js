@@ -1,31 +1,31 @@
 import { useEffect, useState } from "react";
+import { routes } from "../common/routes";
 import { BackToOverview } from "../components/back";
 import { Button } from "../components/button";
 import { Checkbox } from "../components/checkbox";
+import { useNavigate } from "react-router-dom";
+import { isIterationComplete } from "../common/utils";
 
 export function QuestionView({ questions, initialAnswers, title, onDone, onBack }) {
 	const [step, setStep] = useState(0);
 	const [answers, setAnswers] = useState(initialAnswers);
+	let navigate = useNavigate();
 
 	useEffect(() => {
 		// create a 2D array for holding the state of the answers
+		// unless our questions were only partially answered => start with saved answers
 		if (!answers) {
-			let initialAnswers = new Array(questions.length);
+			let emptyAnswers = new Array(questions.length);
 			for (let index = 0; index < questions.length; index++) {
 				const nrOfAnswers = questions[index].answers.length;
-				initialAnswers[index] = new Array(nrOfAnswers).fill(false);
+				emptyAnswers[index] = new Array(nrOfAnswers).fill(false);
 			}
-			setAnswers(initialAnswers);
+			setAnswers(emptyAnswers);
 		}
 	}, []);
 
 	function next() {
-		const newStep = Math.min(step + 1, questions.length);
-		if (newStep < questions.length) {
-			setStep(newStep);
-		} else {
-			goBack();
-		}
+		setStep(step + 1);
 	}
 
 	function previous() {
@@ -33,14 +33,22 @@ export function QuestionView({ questions, initialAnswers, title, onDone, onBack 
 		setStep(newStep);
 	}
 
-	function goBack() {
-		onDone(answers);
-	}
-
 	function toggleAnswer(checked, index) {
 		let newAnswers = [...answers];
 		newAnswers[step][index] = checked;
 		setAnswers(newAnswers);
+	}
+
+	if (step >= questions.length) {
+		return (
+			<Confirmation
+				answers={answers}
+				onConfirm={() => {
+					onDone(answers);
+					navigate(routes.index);
+				}}
+			/>
+		)
 	}
 
 	return (
@@ -57,15 +65,33 @@ export function QuestionView({ questions, initialAnswers, title, onDone, onBack 
 					Previous
 				</Button>
 				<Button isPrimary={true} onClick={next}>
-					{step === questions.length - 1 && 'Finish'}
-					{step < questions.length - 1 && 'Next'}
+					Next
 				</Button>
 			</nav>
+			<span className="block mt-1 center" >
+				{step + 1} / {questions.length}
+			</span>
 		</>
 	);
 }
 
-
+function Confirmation({ onConfirm, answers }) {
+	const wasCompleted = isIterationComplete(answers);
+	return (
+		<>
+			<h2 className="text2">Good job!</h2>
+			{wasCompleted &&
+				<p>You have completed this iteration!</p>
+			}
+			{!wasCompleted &&
+				<p>You can still edit your answers from the overview.</p>
+			}
+			<Button isPrimary onClick={onConfirm}>
+				Done
+			</Button>
+		</>
+	)
+}
 
 function Question({ question, state, toggleAnswer }) {
 	return (

@@ -1,3 +1,6 @@
+import { Link } from "react-router-dom";
+import { routes } from "../common/routes";
+
 export function BackToOverview({ onBack }) {
 	const style = {
 		color: '#999',
@@ -7,8 +10,8 @@ export function BackToOverview({ onBack }) {
 		lineHeight: 3
 	};
 	return (
-		<a onClick={onBack} style={style}>
+		<Link to={routes.index} style={style}>
 			{'<-'} Back To Overview
-		</a>
+		</Link>
 	)
 }
