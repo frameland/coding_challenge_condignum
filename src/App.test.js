@@ -1,8 +1,28 @@
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import { isIterationComplete } from './App';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+describe('This helper function', () => {
+
+	it('tells whether an iteration has been completed', () => {
+		expect(isIterationComplete([
+			[true, false, false],
+			[true, true, true],
+			[false, false, false]
+		])).toBe(false);
+		expect(isIterationComplete([
+			[true, false, false],
+			[false, true, false],
+			[false, true, false]
+		])).toBe(true);
+		expect(isIterationComplete([
+			[],
+			[],
+			[]
+		])).toBe(false);
+		expect(isIterationComplete([
+			[true],
+			[true],
+			[true]
+		])).toBe(true);
+	});
+
 });

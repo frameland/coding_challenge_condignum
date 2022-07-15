@@ -1,0 +1,26 @@
+[
+	{
+		"question": "Who is considered the first computer programmer?",
+		"answers": [
+			"Ada Lovelace",
+			"Alan Turing",
+			"Grace Hopper"
+		]
+	},
+	{
+		"question": "Who presented the mother of all demos in 1968?",
+		"answers": [
+			"David Vonderhaar",
+			"Alan Kay",
+			"Douglas Engelbart"
+		]
+	},
+	{
+		"question": "How high can elephants usually jump?",
+		"answers": [
+			"1 feet",
+			"3 feet",
+			"They can't."
+		]
+	}
+]

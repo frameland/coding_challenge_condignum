@@ -1,3 +1,11 @@
+# Coding Challenge
+
+## Notes
+* Date/time format is ISO 8601
+* 2D array of bools as data structure makes serializing not very robust (changing order/inserting new question would invalidate the saved data)
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
