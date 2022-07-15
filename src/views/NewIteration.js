@@ -18,7 +18,7 @@ export function NewIteration({ onComplete, onBack }) {
 
 	return (
 		<>
-			<BackToOverview onBack={onBack} />
+			<BackToOverview />
 			<form onSubmit={submit}>
 				<Input
 					label='Enter Iteration title'

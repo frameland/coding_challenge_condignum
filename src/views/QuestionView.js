@@ -3,12 +3,15 @@ import { routes } from "../common/routes";
 import { BackToOverview } from "../components/back";
 import { Button } from "../components/button";
 import { Checkbox } from "../components/checkbox";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { isIterationComplete } from "../common/utils";
+import { Question } from "../components/question";
+import { PageNav } from "../components/pagenav";
 
-export function QuestionView({ questions, initialAnswers, title, onDone, onBack }) {
+export function QuestionView({ questions, initialAnswers, title, onDone }) {
 	const [step, setStep] = useState(0);
 	const [answers, setAnswers] = useState(initialAnswers);
+	const { id } = useParams();
 	let navigate = useNavigate();
 
 	useEffect(() => {
@@ -39,12 +42,14 @@ export function QuestionView({ questions, initialAnswers, title, onDone, onBack 
 		setAnswers(newAnswers);
 	}
 
+	if (!answers) return null;
+
 	if (step >= questions.length) {
 		return (
 			<Confirmation
 				answers={answers}
 				onConfirm={() => {
-					onDone(answers);
+					onDone(answers, id);
 					navigate(routes.index);
 				}}
 			/>
@@ -53,24 +58,27 @@ export function QuestionView({ questions, initialAnswers, title, onDone, onBack 
 
 	return (
 		<>
-			<BackToOverview onBack={onBack} />
+			<BackToOverview />
 			<h1 className="text3">{title}</h1>
 			<Question
-				question={questions[step]}
-				state={answers ? answers[step] : null}
-				toggleAnswer={toggleAnswer}
+				questionObject={questions[step]}
+				answers={answers[step]}
+				element={(answer, index, isAnswerChecked) => (
+					<Checkbox
+						name={answer}
+						onToggle={(checked) => toggleAnswer(checked, index)}
+						checked={isAnswerChecked}
+					>
+						{answer}
+					</Checkbox>
+				)}
 			/>
-			<nav>
-				<Button className="mr-1" onClick={previous} disabled={step === 0}>
-					Previous
-				</Button>
-				<Button isPrimary={true} onClick={next}>
-					Next
-				</Button>
-			</nav>
-			<span className="block mt-1 center" >
-				{step + 1} / {questions.length}
-			</span>
+			<PageNav
+				pageIndex={step}
+				nrOfPages={questions.length}
+				onPrevious={previous}
+				onNext={next}
+			/>
 		</>
 	);
 }
@@ -89,29 +97,6 @@ function Confirmation({ onConfirm, answers }) {
 			<Button isPrimary onClick={onConfirm}>
 				Done
 			</Button>
-		</>
-	)
-}
-
-function Question({ question, state, toggleAnswer }) {
-	return (
-		<>
-			<h2>{question.question}</h2>
-			<ul className="mb-2">
-				{question.answers.map((answer, index) => {
-					return (
-						<li key={answer}>
-							<Checkbox
-								name={answer}
-								onToggle={(checked) => toggleAnswer(checked, index)}
-								checked={state && state[index]}
-							>
-								{answer}
-							</Checkbox>
-						</li>
-					)
-				})}
-			</ul>
 		</>
 	)
 }

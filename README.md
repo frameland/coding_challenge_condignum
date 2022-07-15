@@ -3,7 +3,7 @@
 ## Notes
 * Date/time format is ISO 8601
 * 2D array of bools as data structure makes serializing not very robust (changing order/inserting new question would invalidate the saved data)
-
+* Although the QuestionView and QuestionReadView are similar, I kept them separate intentionally as this makes them more flexible for future updates.
 
 
 # Getting Started with Create React App

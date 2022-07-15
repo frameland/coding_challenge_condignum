@@ -1,17 +1,18 @@
 import questions from "./questions.json";
 import { useEffect, useState } from "react";
+import { LocalStorage } from "./common/LocalStorage";
+import { Routes, Route, useNavigate, useParams } from "react-router-dom";
+import { routes } from "./common/routes";
+import { isIterationComplete } from "./common/utils";
 import { NewIteration } from "./views/NewIteration";
 import { Overview } from "./views/Overview";
 import { QuestionView } from "./views/QuestionView";
-import { LocalStorage } from "./common/LocalStorage";
-import { Routes, Route, useNavigate } from "react-router-dom";
-import { routes } from "./common/routes";
-import { isIterationComplete } from "./common/utils";
+import { QuestionReadView } from "./views/QuestionReadView";
+import { Layout } from "./components/layout";
 
 function App() {
 	const [initialized, setInitialized] = useState(false);
 	const [iterations, setIterations] = useState([]);
-	const [activeIteration, setActiveIteration] = useState(-1);
 	let navigate = useNavigate();
 
 	useEffect(() => {
@@ -44,20 +45,18 @@ function App() {
 			creationDateString: new Date().toISOString()
 		}]);
 		const index = iterations.length;
-		setActiveIteration(index);
 		navigate(routes.iteration.replace(':id', index));
 	}
 
-	function finishIteration(answers) {
+	function finishIteration(answers, index) {
 		let updated = [...iterations];
-		updated[activeIteration] = {
-			title: updated[activeIteration].title,
-			creationDateString: updated[activeIteration].creationDateString,
+		updated[index] = {
+			title: updated[index].title,
+			creationDateString: updated[index].creationDateString,
 			answers: answers,
 			wasCompleted: isIterationComplete(answers)
 		};
 		setIterations(updated);
-		onBack();
 	}
 
 	function removeIteration(index) {
@@ -65,12 +64,8 @@ function App() {
 		updated.splice(index, 1);
 		setIterations(updated);
 		if (updated.length === 0) {
-			saveState(updated);
+			saveState(updated); // special case, because we don't normally save if empty array
 		}
-	}
-
-	function onBack() {
-		setActiveIteration(-1);
 	}
 
 	if (!initialized) {
@@ -84,22 +79,25 @@ function App() {
 					<Overview
 						iterations={iterations}
 						onNew={() => navigate(routes.new)}
-						onIterationClick={(index) => setActiveIteration(index)}
 						onIterationDelete={(index) => removeIteration(index)}
 					/>
 				} />
 				<Route path={routes.new} element={
 					<NewIteration
 						onComplete={addIteration}
-						onBack={onBack}
 					/>
 				} />
 				<Route path={routes.iteration} element={
 					<QuestionViewHelper
 						questions={questions}
-						iteration={iterations[activeIteration]}
-						onDone={(answers) => finishIteration(answers)}
-						onBack={onBack}
+						iterations={iterations}
+						onDone={finishIteration}
+					/>
+				} />
+				<Route path={routes.read} element={
+					<QuestionReadViewHelper
+						questions={questions}
+						iterations={iterations}
 					/>
 				} />
 			</Routes>
@@ -107,7 +105,8 @@ function App() {
 	);
 }
 
-function QuestionViewHelper({ questions, iteration, onDone, onBack }) {
+function QuestionViewHelper({ questions, iterations, onDone }) {
+	const iteration = useIteration(iterations);
 	if (!iteration) return null;
 
 	return (
@@ -116,23 +115,29 @@ function QuestionViewHelper({ questions, iteration, onDone, onBack }) {
 			title={iteration.title}
 			initialAnswers={iteration.answers}
 			onDone={onDone}
-			onBack={onBack}
 		/>
 	);
 }
 
-function Layout({ children }) {
-	const style = {
-		maxWidth: "100%",
-		width: 500,
-		margin: "0 auto",
-		padding: "2rem 0"
-	};
+function QuestionReadViewHelper({ questions, iterations }) {
+	const iteration = useIteration(iterations);
+	if (!iteration) return null;
+
 	return (
-		<main style={style}>
-			{children && children}
-		</main>
-	)
+		<QuestionReadView
+			questions={questions}
+			title={iteration.title}
+			answers={iteration.answers}
+		/>
+	);
+}
+
+function useIteration(iterations) {
+	const { id } = useParams();
+	if (!iterations) return null;
+	let result = Number.isNaN(parseInt(id)) ? 0 : id;
+	result = Math.min(result, iterations.length - 1)
+	return iterations[result];
 }
 
 export default App;

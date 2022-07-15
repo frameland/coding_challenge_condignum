@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { routes } from "../common/routes";
 
-export function BackToOverview({ onBack }) {
+export function BackToOverview(props) {
 	const style = {
 		color: '#999',
 		marginTop: '1rem',

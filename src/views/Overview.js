@@ -1,7 +1,8 @@
+import { isIterationComplete } from "../common/utils";
 import { Button } from "../components/button";
 import { IterationPreview } from "../components/preview";
 
-export function Overview({ iterations, onNew, onIterationClick, onIterationDelete }) {
+export function Overview({ iterations, onNew, onIterationDelete }) {
 	return (
 		<>
 			<h1 className="text3 center mb-2">
@@ -11,7 +12,8 @@ export function Overview({ iterations, onNew, onIterationClick, onIterationDelet
 			<div className="center mb-2">
 				<Button
 					isPrimary
-					onClick={onNew}>
+					onClick={onNew}
+				>
 					New Iteration
 				</Button>
 			</div>
@@ -19,14 +21,14 @@ export function Overview({ iterations, onNew, onIterationClick, onIterationDelet
 				{iterations
 					.sort(stringSort)
 					.map((i, index) => {
+						const path = isIterationComplete(i.answers) ? 'read/' : 'iteration/';
 						return (
 							<li key={i.creationDateString}>
 								<IterationPreview
 									title={i.title}
 									creationDateString={i.creationDateString}
 									wasCompleted={i.wasCompleted}
-									path={'iteration/' + index}
-									onClick={() => onIterationClick(index)}
+									path={path + index}
 									onDelete={() => onIterationDelete(index)}
 								/>
 							</li>

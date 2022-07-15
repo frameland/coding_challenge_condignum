@@ -1,6 +1,7 @@
 export const routes = {
 	index: '/',
 	new: 'new',
-	iteration: 'iteration/:id'
+	iteration: 'iteration/:id',
+	read: 'read/:id'
 };
 

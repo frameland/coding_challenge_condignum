@@ -1,4 +1,5 @@
 export function nrOfQuestionsAnswered(answers) {
+	if (!answers) return 0;
 	const answeredQuestions = answers.filter(a => {
 		return a.filter(Boolean).length > 0;
 	});
@@ -6,5 +7,6 @@ export function nrOfQuestionsAnswered(answers) {
 }
 
 export function isIterationComplete(answers) {
+	if (!answers) return false;
 	return nrOfQuestionsAnswered(answers) === answers.length;
 }
