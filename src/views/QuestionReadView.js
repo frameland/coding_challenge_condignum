@@ -25,14 +25,14 @@ export function QuestionReadView({ title, questions, answers }) {
 	return (
 		<>
 			<BackToOverview />
-			<h1 className="text3">{title}</h1>
 			<Question
 				questionObject={questions[step]}
 				answers={answers[step]}
 				element={(answer, index, isAnswerChecked) => (
-					<span>
-						{answer} {isAnswerChecked ? 'yes' : 'no'}
-					</span>
+					<div className="bg-neutral-100 inline-block px-3 py-1 mb-2 rounded">
+						<span className="w-6 inline-block">{isAnswerChecked && '✔️'}</span>
+						{answer}
+					</div>
 				)}
 			/>
 			<PageNav
@@ -41,6 +41,9 @@ export function QuestionReadView({ title, questions, answers }) {
 				onPrevious={previous}
 				onNext={next}
 			/>
+			<p className="text-xs text-zinc-400 mt-6 text-center">
+				Iteration: {title}
+			</p>
 		</>
 	);
 }

@@ -2,24 +2,43 @@ import { Button } from "./button";
 import { Link } from "react-router-dom";
 
 export function IterationPreview({ title, creationDateString, wasCompleted, path, onDelete }) {
-	const style = {
-		background: wasCompleted ? '#A3DAA1' : '#eeeeee',
-		padding: '2em',
-		textDecoration: 'none',
-		color: 'inherit'
-	};
+	let classes = 'block p-4 border relative ';
+	if (wasCompleted) {
+		classes += 'bg-green-100 ';
+	} else {
+		classes += 'bg-zinc-100 ';
+	}
 
 	const date = new Date(creationDateString);
 	return (
-		<>
-			<Link to={path} style={style} className="block">
-				<h2 className="text2">{title}</h2>
-				<p>Date: {date.toLocaleDateString() + ", " + date.toLocaleTimeString()}</p>
-				<span>Completed: {wasCompleted ? "yes" : "no"}</span>
+		<div className={classes}>
+			<Link to={path}>
+				<h2 className="text-2xl">
+					<span className="mr-2">
+						{wasCompleted && '✅'}
+						{!wasCompleted && '✏️'}
+					</span>
+					{title}
+				</h2>
+				{wasCompleted && (
+					<p>
+						All questions were answered.
+					</p>
+				)}
+				{!wasCompleted && (
+					<p>
+						Click to complete the iteration.
+					</p>
+				)}
+				<p className="text-zinc-500 mt-4">
+					Date: {date.toLocaleDateString() + ", " + date.toLocaleTimeString()}
+				</p>
 			</Link>
-			<Button className="block mt-1 mb-1" onClick={onDelete}>
-				Delete
-			</Button>
-		</>
+			<div className="bottom-0 right-0 absolute p-2 z-1">
+				<Button onClick={onDelete}>
+					Remove
+				</Button>
+			</div>
+		</div>
 	)
 }

@@ -3,11 +3,11 @@
 export function Question({ questionObject, answers, element }) {
 	return (
 		<>
-			<h2>{questionObject.question}</h2>
-			<ul className="mb-2">
+			<h2 className="text-xl mt-2 leading-loose">{questionObject.question}</h2>
+			<ul className="mb-4">
 				{questionObject.answers.map((answer, index) => {
 					return (
-						<li key={answer}>
+						<li key={answer} className="ml-4">
 							{element(answer, index, answers && answers[index])}
 						</li>
 					)

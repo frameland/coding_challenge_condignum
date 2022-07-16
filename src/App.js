@@ -53,8 +53,7 @@ function App() {
 		updated[index] = {
 			title: updated[index].title,
 			creationDateString: updated[index].creationDateString,
-			answers: answers,
-			wasCompleted: isIterationComplete(answers)
+			answers: answers
 		};
 		setIterations(updated);
 	}

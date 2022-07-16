@@ -19,17 +19,20 @@ export function NewIteration({ onComplete, onBack }) {
 	return (
 		<>
 			<BackToOverview />
-			<form onSubmit={submit}>
+			<h1 className="text-2xl font-bold">
+				New Iteration
+			</h1>
+			<form onSubmit={submit} className="my-2">
 				<Input
-					label='Enter Iteration title'
+					label='Iteration title'
 					name='title'
 					error={userInputError}
 					onChange={(e) => {
 						setUserInput(e.target.value);
 					}}
 				/>
-				<Button type="submit" className="block">
-					Next
+				<Button type="submit" className="block" isPrimary>
+					Create Iteration
 				</Button>
 			</form>
 		</>

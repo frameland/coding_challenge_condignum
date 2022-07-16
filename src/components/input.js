@@ -1,9 +1,5 @@
 export function Input({ label, name, error, onChange, ...props }) {
-	const style = {
-		borderRadius: 0,
-		outline: 0,
-		border: '1px solid'
-	};
+	let classes = 'border-2 rounded p-1 border-indigo-600';
 
 	function handleChange(e) {
 		if (onChange) {
@@ -12,10 +8,16 @@ export function Input({ label, name, error, onChange, ...props }) {
 	}
 
 	return (
-		<div className="mb-1">
-			<label htmlFor={name} className="block text-bold">{label}</label>
-			<input id={name} style={style} {...props} onChange={handleChange} />
-			{error && <div style={{ color: 'red' }}>{error}</div>}
+		<div className="mb-4">
+			<label htmlFor={name} className="block text-xs font-bold">
+				{label}
+			</label>
+			<input id={name} {...props} className={classes} onChange={handleChange} />
+			{error && (
+				<div className="text-red-500 text-xs">
+					{error}
+				</div>
+			)}
 		</div>
 	);
 }

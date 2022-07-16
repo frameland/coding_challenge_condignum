@@ -1,20 +1,16 @@
-export function Button({ onClick, isPrimary, disabled, type, ...props }) {
-	let style = {
-		borderRadius: 0,
-		outline: 0,
-		border: 0,
-		opacity: disabled ? 0.5 : 1.0,
-		color: 'black',
-		background: '#eee',
-		letterSpacing: '0.2rem',
-		cursor: disabled ? '' : 'pointer',
-		minWidth: 200,
-		lineHeight: 3
-	};
+export function Button({ onClick, isPrimary, disabled, className, type, ...props }) {
+	let classes = 'border-0 rounded outline-0 px-4 py-2 cursor-pointer ';
+	classes += 'disabled:opacity-50 ';
 	if (isPrimary) {
-		style.background = '#88e';
+		classes += 'text-indigo-50 bg-indigo-600 hover:bg-indigo-500 ';
+	} else {
+		classes += 'text-slate-50 bg-slate-600 hover:bg-slate-500 ';
 	}
+	if (className) {
+		classes += className + ' ';
+	}
+
 	return (
-		<button onClick={onClick} type={type} style={style} {...props} />
+		<button onClick={onClick} type={type} disabled={disabled} className={classes} {...props} />
 	);
 }

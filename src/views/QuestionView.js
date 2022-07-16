@@ -4,7 +4,7 @@ import { BackToOverview } from "../components/back";
 import { Button } from "../components/button";
 import { Checkbox } from "../components/checkbox";
 import { useNavigate, useParams } from "react-router-dom";
-import { isIterationComplete } from "../common/utils";
+import { isIterationComplete, nrOfQuestionsAnswered } from "../common/utils";
 import { Question } from "../components/question";
 import { PageNav } from "../components/pagenav";
 
@@ -48,6 +48,7 @@ export function QuestionView({ questions, initialAnswers, title, onDone }) {
 		return (
 			<Confirmation
 				answers={answers}
+				title={title}
 				onConfirm={() => {
 					onDone(answers, id);
 					navigate(routes.index);
@@ -59,18 +60,19 @@ export function QuestionView({ questions, initialAnswers, title, onDone }) {
 	return (
 		<>
 			<BackToOverview />
-			<h1 className="text3">{title}</h1>
 			<Question
 				questionObject={questions[step]}
 				answers={answers[step]}
 				element={(answer, index, isAnswerChecked) => (
-					<Checkbox
-						name={answer}
-						onToggle={(checked) => toggleAnswer(checked, index)}
-						checked={isAnswerChecked}
-					>
-						{answer}
-					</Checkbox>
+					<div className="bg-indigo-50 inline-block px-3 py-1 mb-2 rounded">
+						<Checkbox
+							name={answer}
+							onToggle={(checked) => toggleAnswer(checked, index)}
+							checked={isAnswerChecked}
+						>
+							<span className="ml-1">{answer}</span>
+						</Checkbox>
+					</div>
 				)}
 			/>
 			<PageNav
@@ -79,23 +81,31 @@ export function QuestionView({ questions, initialAnswers, title, onDone }) {
 				onPrevious={previous}
 				onNext={next}
 			/>
+			<p className="text-xs text-zinc-400 mt-6 text-center">
+				Iteration: {title}
+			</p>
 		</>
 	);
 }
 
-function Confirmation({ onConfirm, answers }) {
+function Confirmation({ onConfirm, title, answers }) {
 	const wasCompleted = isIterationComplete(answers);
 	return (
 		<>
-			<h2 className="text2">Good job!</h2>
+			<h1 className="text-2xl font-bold">Good job!</h1>
 			{wasCompleted &&
 				<p>You have completed this iteration!</p>
 			}
 			{!wasCompleted &&
-				<p>You can still edit your answers from the overview.</p>
+				<p>
+					You have answered {nrOfQuestionsAnswered(answers)} out of {answers.length} questions.
+					You can still edit your answers by selecting this iteration (<span className="font-bold">{title}</span>) from the overview.
+				</p>
 			}
-			<Button isPrimary onClick={onConfirm}>
-				Done
+			<Button isPrimary onClick={onConfirm} className="mt-4">
+				{wasCompleted && <span>Done</span>}
+				{!wasCompleted && <span>Got it</span>}
+
 			</Button>
 		</>
 	)
