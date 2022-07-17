@@ -15,7 +15,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 * I used create-react-app to bootstrap the project.
 * Libraries used: react-router and tailwind
 * Date/time format is ISO 8601
-* The answers of the user are saved a a 2D array of bool. It was the simplest structure for solving this problem, however this makes it not very robust to change. E.g: Changing order/inserting new question would invalidate the saved data.
+* The answers of the user are saved a a 2D array of booleans. It was the simplest way for solving the problem, however this makes it not very robust to change. E.g: Changing order/inserting new question would invalidate the saved data.
 * Although the QuestionView and QuestionReadView are similar, I kept them separate intentionally as this makes them more flexible for future updates.
 
 ## Duration for completetion
