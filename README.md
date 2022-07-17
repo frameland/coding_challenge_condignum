@@ -1,78 +1,35 @@
 # Coding Challenge
 
-## Notes
-* Date/time format is ISO 8601
-* 2D array of bools as data structure makes serializing not very robust (changing order/inserting new question would invalidate the saved data)
-* Although the QuestionView and QuestionReadView are similar, I kept them separate intentionally as this makes them more flexible for future updates.
-
-
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
+## Running the app locally
+`npm start`
+to run the app in dev mode.  
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+`npm build` builds the app for production to the `build` folder.
 
-### `npm test`
+`npm test` to launch the test runner in interactive watch mode. I only really tested the most tricky function of the project.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Notes
+* I used create-react-app to bootstrap the project.
+* Libraries used: react-router and tailwind
+* Date/time format is ISO 8601
+* The answers of the user are saved a a 2D array of bool. It was the simplest structure for solving this problem, however this makes it not very robust to change. E.g: Changing order/inserting new question would invalidate the saved data.
+* Although the QuestionView and QuestionReadView are similar, I kept them separate intentionally as this makes them more flexible for future updates.
 
-### `npm run build`
+## Duration for completetion
+* 1 day for the initial draft
+* Half day for refactoring + improving visuals (adding routes via react-router, improve css with tailwind)
+* Half a day for further refactoring + docs + completion
+---
+**Total**: ~ 2 days
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## CRUD endpoints suggestion
+This suggestion assumes a token based API:
+* GET: **getQuestions**() -> JSON List of question data
+* GET: **getIteration**(token, iterationId) -> JSON object representing an iteration: `{title, creationDateString, answers}`
+* POST: **createIteration**(token, title, creationDateString, answers) -> Success/Failure response
+* PUT: **updateIteration**(token, iterationId, answers)
+* DELETE: **removeIteration**(token, iterationId)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+The iterationId could be created by the backend in the `createIteration(...)` call and sent back in the success response:
+`{"code": 200, "iterationId": "b4gh53"}`
