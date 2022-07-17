@@ -1,6 +1,8 @@
 # Coding Challenge
 
 ## Running the app locally
+Run `npm install` once to install dependencies.
+
 `npm start`
 to run the app in dev mode.  
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
